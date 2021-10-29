@@ -10,7 +10,26 @@ const socket = io({
 
 let throttle = false;
 let interval = null;
+
 let touchSupport = "ontouchstart" in document.documentElement;
+let active = false;
+let stopValueSent = false;
+
+if (touchSupport) {
+  window.addEventListener("touchstart", (e) => {
+    active = true;
+  });
+  window.addEventListener("touchend", (e) => {
+    active = false;
+  });
+} else {
+  window.addEventListener("mousedown", (e) => {
+    active = true;
+  });
+  window.addEventListener("mouseup", (e) => {
+    active = false;
+  });
+}
 
 let motion = {
   left: 0,
@@ -19,18 +38,14 @@ let motion = {
 };
 
 leftMotor.addEventListener("input", function () {
-  leftMotorValue.innerHTML = leftMotor.value;
-  motion.left = leftMotor.value;
-  motion.timestamp = Date.now();
+  setLeftMotor(leftMotor.value);
   if (!throttle || (motion.right == 0 && motion.left == 0)) {
     sendData();
   }
 });
 
 rightMotor.addEventListener("input", function () {
-  rightMotorValue.innerHTML = rightMotor.value;
-  motion.right = rightMotor.value;
-  motion.timestamp = Date.now();
+  setRightMotor(rightMotor.value);
   if (!throttle || (motion.right == 0 && motion.left == 0)) {
     sendData();
   }
@@ -45,57 +60,51 @@ function sendData() {
   }, 50);
 }
 
-setCustomInterval = () => {
-  interval = setInterval(() => {
+interval = setInterval(() => {
+  if (!active) {
     if (leftMotor.value != 0) {
-      if (leftMotor.value <= 0) {
-        leftMotor.value -= -1;
+			stopValueSent = false;
+      if (motion.left <= 0) {
+        setLeftMotor(motion.left + 1);
       } else {
-        leftMotor.value -= 1;
+        setLeftMotor(motion.left - 1);
       }
-      motion.left = leftMotor.value;
-      motion.timestamp = Date.now();
-      leftMotorValue.innerHTML = leftMotor.value;
-      if (!throttle || (motion.right == 0 && motion.left == 0)) {
-        sendData();
-      }
+
+      leftMotorValue.innerHTML = motion.left;
     }
-  }, 20);
-};
 
-if (touchSupport) {
-  document.ontouchstart((e) => {
-    e.preventDefault();
-    setCustomInterval();
-  });
+    if (rightMotor.value != 0) {
+			stopValueSent = false;
+      if (rightMotor.value <= 0) {
+        setRightMotor(motion.right + 1);
+      } else {
+        setRightMotor(motion.right - 1);
+      }
+      rightMotorValue.innerHTML = motion.right;
+    }
+    motion.timestamp = Date.now();
+    if (!throttle && !stopValueSent) {
+      sendData();
+      if (motion.left == 0 && motion.right == 0) {
+        stopValueSent = true;
+      }
+      throttle = true;
+    }
+  }
+}, 20);
 
-  document.ontouchend((e) => {
-    e.preventDefault();
-    clearInterval(interval);
-  });
-} else {
-  document.onmousedown = (e) => {
-    e.preventDefault();
-    setCustomInterval();
-  };
-
-  document.onmouseup = (e) => {
-    e.preventDefault();
-    clearInterval(interval);
-  };
+function setLeftMotor(value) {
+  value = parseInt(value);
+  leftMotor.value = value;
+  leftMotorValue.innerHTML = value;
+  motion.left = value;
+  motion.timestamp = Date.now();
 }
-// setInterval(() => {
-//   if (rightMotor.value != 0) {
-//     if (rightMotor.value <= 0) {
-//       rightMotor.value -= -1;
-//     } else {
-//       rightMotor.value -= 1;
-//     }
-//     motion.right = rightMotor.value;
-//     motion.timestamp = Date.now();
-//     rightMotorValue.innerHTML = rightMotor.value;
-//     if (!throttle || (motion.right == 0 && motion.left == 0)) {
-//       sendData();
-//     }
-//   }
-// }, 20);
+
+function setRightMotor(value) {
+  value = parseInt(value);
+  rightMotor.value = value;
+  rightMotorValue.innerHTML = value;
+  motion.right = value;
+  motion.timestamp = Date.now();
+}
