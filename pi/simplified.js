@@ -15,3 +15,4 @@ socket.on("disconnect", () => {
 socket.on("simplified", (data) => {
   console.log(data);
 });
+

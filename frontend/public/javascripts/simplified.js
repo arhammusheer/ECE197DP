@@ -42,3 +42,25 @@ function sendData() {
     throttle = false;
   }, 100);
 }
+
+setInterval(() => {
+  if (leftMotor.value != 0) {
+    leftMotor.value -= 1;
+    motion.left = leftMotor.value;
+    motion.timestamp = Date.now();
+    if (!throttle || (motion.right == 0 && motion.left == 0)) {
+      sendData();
+    }
+  }
+}, 20);
+
+setInterval(() => {
+	if (rightMotor.value != 0) {
+		rightMotor.value -= 1;
+		motion.right = rightMotor.value;
+		motion.timestamp = Date.now();
+		if (!throttle || (motion.right == 0 && motion.left == 0)) {
+			sendData();
+		}
+	}
+}, 20);
