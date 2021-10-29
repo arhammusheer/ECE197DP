@@ -22,7 +22,7 @@ socket.on("disconnect", () => {
 socket.on("simplified", (data) => {
   console.log(data);
 
-  if (data.left > 0) {
+  if (data.left >= 0) {
     if (process.env.NODE_ENV === "production") {
       leftMotor1.pwmWrite((data.left / 100) * 255);
       leftMotor2.pwmWrite(0);
@@ -34,7 +34,7 @@ socket.on("simplified", (data) => {
     }
   }
 
-  if (data.right > 0) {
+  if (data.right >= 0) {
     if (process.env.NODE_ENV === "production") {
       rightMotor1.pwmWrite((data.right / 100) * 255);
       rightMotor2.pwmWrite(0);
