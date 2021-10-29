@@ -45,10 +45,14 @@ function sendData() {
 
 setInterval(() => {
   if (leftMotor.value != 0) {
-    leftMotor.value -= 1;
+    if (leftMotor.value <= 0) {
+      leftMotor.value -= -1;
+    } else {
+      leftMotor.value -= 1;
+    }
     motion.left = leftMotor.value;
     motion.timestamp = Date.now();
-		leftMotorValue.innerHTML = leftMotor.value;
+    leftMotorValue.innerHTML = leftMotor.value;
     if (!throttle || (motion.right == 0 && motion.left == 0)) {
       sendData();
     }
@@ -56,13 +60,17 @@ setInterval(() => {
 }, 20);
 
 setInterval(() => {
-	if (rightMotor.value != 0) {
-		rightMotor.value -= 1;
-		motion.right = rightMotor.value;
-		motion.timestamp = Date.now();
-		rightMotorValue.innerHTML = rightMotor.value;
-		if (!throttle || (motion.right == 0 && motion.left == 0)) {
-			sendData();
-		}
-	}
+  if (rightMotor.value != 0) {
+    if (rightMotor.value <= 0) {
+      rightMotor.value -= -1;
+    } else {
+      rightMotor.value -= 1;
+    }
+    motion.right = rightMotor.value;
+    motion.timestamp = Date.now();
+    rightMotorValue.innerHTML = rightMotor.value;
+    if (!throttle || (motion.right == 0 && motion.left == 0)) {
+      sendData();
+    }
+  }
 }, 20);
