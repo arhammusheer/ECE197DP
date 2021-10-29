@@ -2,11 +2,16 @@ const io = require("socket.io-client");
 require("dotenv").config();
 const Gpio = require("pigpio").Gpio;
 
+let leftMotor1 = null
+let leftMotor2 = null
+let rightMotor1 = null
+let rightMotor2 = null
+
 if (process.env.NODE_ENV === "production") {
-  const leftMotor1 = new Gpio(17, { mode: Gpio.OUTPUT });
-  const leftMotor2 = new Gpio(27, { mode: Gpio.OUTPUT });
-  const rightMotor1 = new Gpio(23, { mode: Gpio.OUTPUT });
-  const rightMotor2 = new Gpio(24, { mode: Gpio.OUTPUT });
+  leftMotor1 = new Gpio(17, { mode: Gpio.OUTPUT });
+  leftMotor2 = new Gpio(27, { mode: Gpio.OUTPUT });
+  rightMotor1 = new Gpio(23, { mode: Gpio.OUTPUT });
+  rightMotor2 = new Gpio(24, { mode: Gpio.OUTPUT });
 }
 
 const socket = io("https://ece197dp.croissant.one", {
