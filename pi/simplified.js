@@ -24,25 +24,25 @@ socket.on("simplified", (data) => {
 
   if (data.left >= 0) {
     if (process.env.NODE_ENV === "production") {
-      leftMotor1.pwmWrite((data.left / 100) * 255);
+      leftMotor1.pwmWrite(data.left);
       leftMotor2.pwmWrite(0);
     }
   } else {
     if (process.env.NODE_ENV === "production") {
       leftMotor1.pwmWrite(0);
-      leftMotor2.pwmWrite((-data.left / 100) * 255);
+      leftMotor2.pwmWrite(-1 * data.left);
     }
   }
 
   if (data.right >= 0) {
     if (process.env.NODE_ENV === "production") {
-      rightMotor1.pwmWrite((data.right / 100) * 255);
+      rightMotor1.pwmWrite(data.right);
       rightMotor2.pwmWrite(0);
     }
   } else {
     if (process.env.NODE_ENV === "production") {
       rightMotor1.pwmWrite(0);
-      rightMotor2.pwmWrite((-data.right / 100) * 255);
+      rightMotor2.pwmWrite(-1 * data.right);
     }
   }
 });
