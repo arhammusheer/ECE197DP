@@ -9,6 +9,12 @@ const socket = io({
 });
 
 let throttle = false;
+let interval = null;
+let touchSupport = false;
+
+if ("ontouchstart" in document.documentElement) {
+  touchSupport = true;
+}
 
 let motion = {
   left: 0,
@@ -43,34 +49,57 @@ function sendData() {
   }, 50);
 }
 
-setInterval(() => {
-  if (leftMotor.value != 0) {
-    if (leftMotor.value <= 0) {
-      leftMotor.value -= -1;
-    } else {
-      leftMotor.value -= 1;
+setCustomInterval = () => {
+  interval = setInterval(() => {
+    if (leftMotor.value != 0) {
+      if (leftMotor.value <= 0) {
+        leftMotor.value -= -1;
+      } else {
+        leftMotor.value -= 1;
+      }
+      motion.left = leftMotor.value;
+      motion.timestamp = Date.now();
+      leftMotorValue.innerHTML = leftMotor.value;
+      if (!throttle || (motion.right == 0 && motion.left == 0)) {
+        sendData();
+      }
     }
-    motion.left = leftMotor.value;
-    motion.timestamp = Date.now();
-    leftMotorValue.innerHTML = leftMotor.value;
-    if (!throttle || (motion.right == 0 && motion.left == 0)) {
-      sendData();
-    }
-  }
-}, 20);
+  }, 20);
+};
 
-setInterval(() => {
-  if (rightMotor.value != 0) {
-    if (rightMotor.value <= 0) {
-      rightMotor.value -= -1;
-    } else {
-      rightMotor.value -= 1;
-    }
-    motion.right = rightMotor.value;
-    motion.timestamp = Date.now();
-    rightMotorValue.innerHTML = rightMotor.value;
-    if (!throttle || (motion.right == 0 && motion.left == 0)) {
-      sendData();
-    }
-  }
-}, 20);
+if (touchSupport) {
+  document.ontouchstart((e) => {
+    e.preventDefault();
+    setCustomInterval();
+  });
+
+  document.ontouchend((e) => {
+    e.preventDefault();
+    clearInterval(interval);
+  });
+} else {
+  document.onmousedown = (e) => {
+    e.preventDefault();
+    setCustomInterval();
+  };
+
+  document.onmouseup = (e) => {
+    e.preventDefault();
+    clearInterval(interval);
+  };
+}
+// setInterval(() => {
+//   if (rightMotor.value != 0) {
+//     if (rightMotor.value <= 0) {
+//       rightMotor.value -= -1;
+//     } else {
+//       rightMotor.value -= 1;
+//     }
+//     motion.right = rightMotor.value;
+//     motion.timestamp = Date.now();
+//     rightMotorValue.innerHTML = rightMotor.value;
+//     if (!throttle || (motion.right == 0 && motion.left == 0)) {
+//       sendData();
+//     }
+//   }
+// }, 20);
