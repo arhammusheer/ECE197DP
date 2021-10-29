@@ -10,11 +10,7 @@ const socket = io({
 
 let throttle = false;
 let interval = null;
-let touchSupport = false;
-
-if ("ontouchstart" in document.documentElement) {
-  touchSupport = true;
-}
+let touchSupport = "ontouchstart" in document.documentElement;
 
 let motion = {
   left: 0,
