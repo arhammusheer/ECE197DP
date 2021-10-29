@@ -6,6 +6,11 @@ const arrow = document.getElementById("arrow");
 const socket = io({
   path: "/ece197dp",
 });
+
+socket.on("accelerometer", (data) => {
+  console.log(data);
+});
+
 const accelerometer = new Accelerometer({ frequency: 100 });
 
 accelerometer.addEventListener("activate", (e) => {
@@ -97,7 +102,3 @@ const showStop = () => {
   document.getElementById("stop-sign").style.display = "block";
   document.getElementById("arrow").style.display = "none";
 };
-
-socket.on("accelerometer", (data) => {
-  console.log(data);
-});
