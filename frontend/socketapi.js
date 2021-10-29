@@ -2,6 +2,8 @@ const io = require("socket.io")();
 const socketapi = {
   io: io,
 };
+io.path("/ece197dp");
+
 
 // Add your socket.io logic here!
 io.on("connection", function (socket) {
@@ -9,6 +11,7 @@ io.on("connection", function (socket) {
 
   socket.on("accelerometer", (data) => {
     console.log(data);
+    io.emit("accelerometer", data);
   });
 });
 // end of socket.io logic
