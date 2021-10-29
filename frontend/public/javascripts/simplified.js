@@ -40,7 +40,7 @@ function sendData() {
   throttle = true;
   setTimeout(() => {
     throttle = false;
-  }, 100);
+  }, 20);
 }
 
 setInterval(() => {
