@@ -1,6 +1,11 @@
-const Gpio = require('pigpio').Gpio;
+let Gpio = require("pigpio");
 
-const led = new Gpio(17, {mode: Gpio.OUTPUT});
+if (Gpio.initialize) {
+  Gpio = Gpio.Gpio;
+  console.log("Pigpio initialized");
+}
+
+const led = new Gpio(17, { mode: Gpio.OUTPUT });
 
 let dutyCycle = 0;
 
