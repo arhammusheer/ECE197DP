@@ -12,6 +12,6 @@ socket.on("disconnect", () => {
   console.log(socket.id); // undefined
 });
 
-socket.on("remote", (data) => {
+socket.on("simplified", (data) => {
   console.log(data);
 });

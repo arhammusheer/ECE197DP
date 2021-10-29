@@ -4,7 +4,6 @@ const socketapi = {
 };
 io.path("/ece197dp");
 
-
 // Add your socket.io logic here!
 io.on("connection", function (socket) {
   console.log("A user connected");
@@ -12,6 +11,10 @@ io.on("connection", function (socket) {
   socket.on("accelerometer", (data) => {
     console.log(data);
     io.emit("accelerometer", data);
+  });
+  socket.on("simplified", (data) => {
+    console.log(data);
+    io.emit("simplified", data);
   });
 });
 // end of socket.io logic
