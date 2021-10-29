@@ -48,6 +48,7 @@ setInterval(() => {
     leftMotor.value -= 1;
     motion.left = leftMotor.value;
     motion.timestamp = Date.now();
+		leftMotorValue.innerHTML = leftMotor.value;
     if (!throttle || (motion.right == 0 && motion.left == 0)) {
       sendData();
     }
@@ -59,6 +60,7 @@ setInterval(() => {
 		rightMotor.value -= 1;
 		motion.right = rightMotor.value;
 		motion.timestamp = Date.now();
+		rightMotorValue.innerHTML = rightMotor.value;
 		if (!throttle || (motion.right == 0 && motion.left == 0)) {
 			sendData();
 		}
