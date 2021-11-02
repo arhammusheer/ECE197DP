@@ -70,12 +70,6 @@ accelerometer.addEventListener("reading", (e) => {
 
       move(x, y);
     }
-
-    socket.emit("accelerometer", {
-      x: Math.round(accelerometer.x),
-      y: Math.round(accelerometer.y),
-      timestamp: Math.round(Date.now()),
-    });
   }
 });
 
