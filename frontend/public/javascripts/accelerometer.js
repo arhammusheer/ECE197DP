@@ -68,7 +68,7 @@ accelerometer.addEventListener("reading", (e) => {
         right = Math.round(temp_y * 10);
       } else if (temp_y < 0) {
         direction += 2 * Math.PI;
-        left = Math.round(temp_x * 10);
+        left = Math.round(temp_y * 10);
         right = Math.round(mag * 10);
       }
       info.innerHTML = `
