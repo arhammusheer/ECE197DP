@@ -56,20 +56,10 @@ accelerometer.addEventListener("reading", (e) => {
       let temp_y = -1 * y;
       let direction = Math.atan(temp_y / temp_x);
 
-      let mag = Math.sqrt(Math.pow(temp_x, 2) + Math.pow(temp_y, 2));
-      let left = 0;
-      let right = 0;
-
-      if (mag > 10) mag = 10;
-
       if (temp_x < 0) {
         direction += Math.PI; // For arrow
-        left = Math.round(mag * 10);
-        right = Math.round(temp_y * 10);
       } else if (temp_y < 0) {
         direction += 2 * Math.PI;
-        left = Math.round(temp_y * 10);
-        right = Math.round(mag * 10);
       }
       info.innerHTML = `
       direction: ${direction}
@@ -78,11 +68,7 @@ accelerometer.addEventListener("reading", (e) => {
 
       arrow.style.transform = `rotate(${-direction}rad)`;
 
-      socket.emit("simplified", {
-        left: left,
-        right: right,
-        timestamp: Date.now(),
-      });
+      move(x, y);
     }
 
     socket.emit("accelerometer", {
@@ -104,3 +90,67 @@ const showStop = () => {
   document.getElementById("stop-sign").style.display = "block";
   document.getElementById("arrow").style.display = "none";
 };
+
+function move(x, y) {
+  x = -1 * x;
+  y = -1 * y;
+
+  if (y > 10) y = 10;
+  if (y < -10) y = -10;
+
+  if (x > 10) x = 10;
+  if (x < -10) x = -10;
+
+  let left = 0;
+  let right = 0;
+
+  let mag = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  if (mag < -10) mag = -10;
+  if (mag > 10) mag = 10;
+
+  if (x == 0) {
+    // Forward and backward
+    left = Math.round(y * 10);
+    right = Math.round(y * 10);
+  }
+  if (y == 0) {
+    // Full left and right
+    if (x > 0) {
+      // Right
+      left = Math.round(x * 10);
+      right = 0;
+    }
+    if (x < 0) {
+      // Left
+      left = 0;
+      right = Math.round(x * 10);
+    }
+  }
+  if (x > 0 && y > 0) {
+    // Forward right
+    left = Math.round(mag * 10);
+    right = Math.round(y * 10);
+  }
+  if (x > 0 && y < 0) {
+    // Backward right
+    if (mag > 10) mag = 10;
+    if (mag < -10) mag = -10;
+    left = -1 * Math.round(mag * 10);
+    right = Math.round(y * 10);
+  }
+  if (x < 0 && y > 0) {
+    // Forward left
+    right = Math.round(mag * 10);
+    left = Math.round(y * 10);
+  }
+  if (x < 0 && y < 0) {
+    // Backward left
+    right = -1 * Math.round(mag * 10);
+    left = Math.round(y * 10);
+  }
+  socket.emit("simplified", {
+    left: left,
+    right: right,
+    timestamp: Date.now(),
+  });
+}
