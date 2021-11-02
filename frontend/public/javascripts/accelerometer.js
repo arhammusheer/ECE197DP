@@ -19,7 +19,6 @@ accelerometer.addEventListener("activate", (e) => {
 
 let x = 0;
 let y = 0;
-let z = 0;
 let counter = 0;
 
 accelerometer.addEventListener("reading", (e) => {
@@ -39,14 +38,9 @@ accelerometer.addEventListener("reading", (e) => {
 			</p>
 		</div>
 	`;
-  if (
-    x != Math.round(accelerometer.x) ||
-    y != Math.round(accelerometer.y) ||
-    z != Math.round(accelerometer.z)
-  ) {
+  if (x != Math.round(accelerometer.x) || y != Math.round(accelerometer.y)) {
     x = Math.round(accelerometer.x);
     y = Math.round(accelerometer.y);
-    z = Math.round(accelerometer.z);
 
     if (x == 0 && y == 0) {
       showStop();
@@ -94,7 +88,6 @@ accelerometer.addEventListener("reading", (e) => {
     socket.emit("accelerometer", {
       x: Math.round(accelerometer.x),
       y: Math.round(accelerometer.y),
-      z: Math.round(accelerometer.z),
       timestamp: Math.round(Date.now()),
     });
   }
