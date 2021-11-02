@@ -16,6 +16,14 @@ io.on("connection", function (socket) {
     console.log(data);
     io.emit("simplified", data);
   });
+  socket.on("disconnect", (e) => {
+    socket.emit("simplified", {
+      left: 0,
+      right: 0,
+      timestamp: Date.now(),
+      serverside: true,
+    });
+  });
 });
 // end of socket.io logic
 
