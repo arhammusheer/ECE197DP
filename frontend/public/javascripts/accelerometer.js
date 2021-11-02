@@ -95,6 +95,9 @@ function move(x, y) {
   x = -1 * x;
   y = -1 * y;
 
+  if (x < 1 && x > -1) x = 0;
+  if (y < 1 && y > -1) y = 0;
+
   if (y > 10) y = 10;
   if (y < -10) y = -10;
 
