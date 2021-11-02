@@ -17,7 +17,7 @@ io.on("connection", function (socket) {
     io.emit("simplified", data);
   });
   socket.on("disconnect", (e) => {
-    socket.emit("simplified", {
+    io.emit("simplified", {
       left: 0,
       right: 0,
       timestamp: Date.now(),
