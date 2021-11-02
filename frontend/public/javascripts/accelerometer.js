@@ -35,9 +35,6 @@ accelerometer.addEventListener("reading", (e) => {
 				<strong>y:</strong> ${Math.round(accelerometer.y)}
 			</p>
 			<p>
-				<strong>z:</strong> ${Math.round(accelerometer.z)}
-			</p>
-			<p>
 				<strong>timestamp:</strong> ${Math.round(Date.now())}
 			</p>
 		</div>
@@ -53,16 +50,32 @@ accelerometer.addEventListener("reading", (e) => {
 
     if (x == 0 && y == 0) {
       showStop();
+      socket.emit("simplified", {
+        left: 0,
+        right: 0,
+        timestamp: Date.now(),
+      });
     } else {
       hideStop();
 
       let temp_x = -1 * x;
       let temp_y = -1 * y;
       let direction = Math.atan(temp_y / temp_x);
+
+      let mag = Math.sqrt(Math.pow(temp_x, 2) + Math.pow(temp_y, 2));
+      let left = 0;
+      let right = 0;
+
+      if (mag > 10) mag = 10;
+
       if (temp_x < 0) {
-        direction += Math.PI;
+        direction += Math.PI; // For arrow
+        left = Math.round(mag * 10);
+        right = Math.round(temp_y * 10);
       } else if (temp_y < 0) {
         direction += 2 * Math.PI;
+        left = Math.round(temp_x * 10);
+        right = Math.round(mag * 10);
       }
       info.innerHTML = `
       direction: ${direction}
@@ -70,6 +83,12 @@ accelerometer.addEventListener("reading", (e) => {
       `;
 
       arrow.style.transform = `rotate(${-direction}rad)`;
+
+      socket.emit("simplified", {
+        left: left,
+        right: right,
+        timestamp: Date.now(),
+      });
     }
 
     socket.emit("accelerometer", {
@@ -82,16 +101,6 @@ accelerometer.addEventListener("reading", (e) => {
 });
 
 accelerometer.start();
-// setTimeout(() => {
-//   accelerometer.stop();
-//   socket.emit("accelerometer", {
-//     x: 0,
-//     y: 0,
-//     z: 10,
-//     timestamp: Date.now(),
-//   });
-//   info.innerHTML = "Disabled\n";
-// }, 10 * 1000);
 
 const hideStop = () => {
   document.getElementById("stop-sign").style.display = "none";
